@@ -1,0 +1,121 @@
+For alter core controller : 
+
+Create .services.yml
+
+For knwo root name 
+    $route_name = \Drupal::routeMatch()->getRouteName();
+    print_r($route_name);
+    exit;
+    
+    
+    get node 
+    
+    		$nid = \Drupal::routeMatch()->getRawParameter('node');
+		$node = Node::load($nid);
+
+
+        // $ids = \Drupal::entityQuery('user')
+        // ->condition('status', 1)
+        // ->condition('roles', 'administrator')
+        // ->execute();
+        // $users = User::loadMultiple($ids);
+
+        // dpm($users);
+        //$current_user = \Drupal::currentUser();
+        $user->addRole('administrator');
+        $user->save();
+
+
+ $user = user_load_by_name('ursula');
+          if ($user) {
+            $user->addRole('attandee_role');
+            $user->save();
+          }
+
+
+custom.links.task.yml for add tabbs next to the view tabs
+  base_route: entity.node.canonical required
+
+Get daynamic value : $text = \Drupal::request()->get('node');;
+
+$node = \Drupal::routeMatch()->getParameter('node');
+
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_args = explode('/', $current_path);
+  $account = \Drupal::currentUser();
+  if(($path_args[1] == "user") && ($account->id() == 0)){
+    unset($local_tasks['tabs'][0]['tracker.user_tab']);
+  }
+
+
+for collapsible : 
+
+		$form[$mail] = array(
+	      '#type' => 'details',
+	      '#title' => $mail,
+	      '#open' => TRUE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+	    );
+
+
+
+    $result = \Drupal::httpClient()->post($post_url, ['body' => $submit_data_json
+      ]);
+      
+
+
+$responseed = $result->getBody()->getContents();//getBody(TRUE)
+      $checkLogin = $responseed;
+
+      // This will remove unwanted characters.
+      // Check http://www.php.net/chr for details
+      for ($i = 0; $i <= 31; ++$i) { 
+          $checkLogin = str_replace(chr($i), "", $checkLogin); 
+      }
+      $checkLogin = str_replace(chr(127), "", $checkLogin);
+
+      // This is the most common part
+      // Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
+      // here we detect it and we remove it, basically it's the first 3 characters 
+      if (0 === strpos(bin2hex($checkLogin), 'efbbbf')) {
+         $checkLogin = substr($checkLogin, 3);
+      }
+
+      $response = json_decode( $checkLogin );
+
+function custom_views_query_alter(Drupal\views\ViewExecutable $view, Drupal\views\Plugin\views\query\Sql $query) {
+		
+	if ($view->id() == 'calender' && $view->getDisplay()->display['id'] == 'page_1') {
+		$current_path = \Drupal::service('path.current')->getPath();
+		$path_args = explode('/', $current_path); 
+		$year = date('Y'); 
+		$month = date('m'); 
+		if($path_args[2] == ''){
+			$path_args[2] = $year.$month;
+		}		
+		if($path_args[2] != ''){
+				$output = str_split($path_args[2], 4);
+				$result = implode('-',$output);	          
+		$configuration = array(
+          'type'       => 'INNER',
+          'table'      => 'node__field_event_date',
+          'field'      => 'entity_id',
+          'left_table' => 'node_field_data',
+          'left_field' => 'nid',
+          'operator'   => '=',
+        );
+      $join = \Drupal\views\Views::pluginManager('join')->createInstance('standard', $configuration);
+        $rel = $query->addRelationship('node__field_event_date', $join, 'node_field_data');
+        $query->addTable('node__field_event_date', $rel, $join, 'node__field_event_date');
+        //$query->addWhere('1', 'node__field_event_date.field_event_date_value', "2017-10-14T12:30:00", '=');
+      foreach ($query->where as &$condition_group) {
+        foreach ($condition_group['conditions'] as &$condition) {
+          $condition = [
+          'field' => 'node__field_event_date.field_event_date_value',
+          'value' => "%".$result."%",
+          'operator' => 'LIKE',
+          ];
+        }
+      }		
+		}
+	}	
+}
