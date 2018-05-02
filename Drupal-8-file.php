@@ -1,39 +1,33 @@
 <?php
-For alter core controller : 
+//For alter core controller : 
 
-Create .services.yml
+//Create .services.yml
 
-For knwo root name 
+//For knwo root name 
     $route_name = \Drupal::routeMatch()->getRouteName();
     print_r($route_name);
     exit;
     
     
-    get node 
+    //get node 
     
-    		$nid = \Drupal::routeMatch()->getRawParameter('node');
+    $nid = \Drupal::routeMatch()->getRawParameter('node');
 		$node = Node::load($nid);
+    // $ids = \Drupal::entityQuery('user')
+    // ->condition('status', 1)
+    // ->condition('roles', 'administrator')
+    // ->execute();
+    // $users = User::loadMultiple($ids);
 
-
-        // $ids = \Drupal::entityQuery('user')
-        // ->condition('status', 1)
-        // ->condition('roles', 'administrator')
-        // ->execute();
-        // $users = User::loadMultiple($ids);
-
-        // dpm($users);
-        //$current_user = \Drupal::currentUser();
-        $user->addRole('administrator');
-        $user->save();
-
-
- $user = user_load_by_name('ursula');
-          if ($user) {
-            $user->addRole('attandee_role');
-            $user->save();
-          }
-
-
+    // dpm($users);
+    //$current_user = \Drupal::currentUser();
+    $user->addRole('administrator');
+    $user->save();
+    $user = user_load_by_name('ursula');
+    if ($user) {
+      $user->addRole('attandee_role');
+      $user->save();
+    }
 custom.links.task.yml for add tabbs next to the view tabs
   base_route: entity.node.canonical required
 
